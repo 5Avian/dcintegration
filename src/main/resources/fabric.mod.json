@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "dcintegration",
+  "version": "${mod_version}",
+  "name": "DCIntegration",
+  "description": "A Discord integration mod that links your Minecraft chat to a Discord channel.",
+  "authors": [
+    "5Avian"
+  ],
+  "license": "MIT",
+  "environment": "server",
+  "entrypoints": {
+    "server": [
+      "fiveavian.dcintegration.DCIntegrationServer"
+    ]
+  },
+  "mixins": [
+    "dcintegration.mixins.json"
+  ],
+  "accessWidener": "dcintegration.accesswidener",
+  "depends": {
+    "minecraft": "~7.2",
+    "fabricloader": ">=0.15.5",
+    "halplibe": ">=3.5.4"
+  }
+}
