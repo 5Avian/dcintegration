@@ -43,23 +43,25 @@ public class DCIntegrationServer extends ListenerAdapter implements DedicatedSer
 
     @Override
     public void onInitializeServer() {
+        Path configPath =  FabricLoader.getInstance()
+                .getConfigDir()
+                .resolve(MOD_ID + ".properties");
+        try {
+            config.load(configPath);
+        } catch (IOException ignored) {}
+        try {
+            config.save(configPath);
+        } catch (IOException ignored) {}
+        if (config.botToken.isEmpty() || config.guildId.isEmpty() || config.channelId.isEmpty()) {
+            throw new RuntimeException("DCIntegration is not configured correctly. Please ensure that a valid bot token, guild id and channel id have been set.");
+        }
+
         ServerEvents.START.add(this::onStart);
         ServerEvents.STOP.add(this::onStop);
         ServerEvents.CHAT_MESSAGE.add(this::onChatMessage);
     }
 
     private void onStart(MinecraftServer server) {
-        Path configPath =  FabricLoader.getInstance()
-                .getConfigDir()
-                .resolve(MOD_ID + ".properties");
-        try {
-            config.load(configPath);
-            config.save(configPath);
-        } catch (IOException ignored) {}
-        if (config.botToken == null || config.guildId == null || config.channelId == null) {
-            throw new RuntimeException("DCIntegration is not configured correctly. Please ensure that a valid bot token, guild id and channel id have been set.");
-        }
-
         playerList = server.playerList;
         jda = JDABuilder.createLight(config.botToken, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_WEBHOOKS)
                 .addEventListeners(this)
